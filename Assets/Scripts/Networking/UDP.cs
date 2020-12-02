@@ -1,84 +1,92 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Threading.Tasks;
-using TestData;
-using TMPro;
 using UnityEngine;
-using UnityEngine.Events;
-using UnityEngine.PlayerLoop;
-using UnityEngine.UI;
 
 namespace Networking
 {
     [System.Serializable]
-    public class UDP
+    internal class UDP : Connection
     {
-        #region Singleton
+        protected int listeningPort;
         
-        private static UDP instance;
-        
-        public static UDP Instance
+        public struct UdpState
         {
-            get
+            public UdpClient Client;
+            public IPEndPoint EndPoint;
+        }
+
+        private UdpState state;
+        private Socket socket;
+
+        public UDP(string targetIP, int targetPort, int listeningPort) : base(targetIP, targetPort)
+        {
+            this.listeningPort = listeningPort;
+        }
+
+        public override void Initialize()
+        {
+            if (active)
+                return;
+
+            state = new UdpState
             {
-                if (instance == null)
-                    instance = new UDP();
-                return instance;
+                Client = new UdpClient(listeningPort),
+                EndPoint = new IPEndPoint(IPAddress.Any, listeningPort)
+            };
+
+            ReceiveMessages();
+            active = true;
+            Debug.Log("Waiting for UDP broadcast");
+        }
+
+        public override void Stop()
+        {
+            try
+            {
+                active = false;
+                state.Client.Close();
+            }
+            catch
+            {
+                // ignored
             }
         }
 
-        #endregion
-
-        private const int listenPort = 11100;
-        private const string serverIP = "192.168.8.100";
-
-        public static string logText;
-
-        public static Action<byte[]> InterpreteData;
-
-        private UDP()
+        public override void SendData(byte[] data)
         {
-            UdpClient listener = new UdpClient(listenPort);
-            IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);
-            Task.Run(() => Listen(listener, groupEP));
+            if (socket == null)
+                socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+
+            IPAddress broadcast = IPAddress.Parse(targetIP);
+            IPEndPoint ep = new IPEndPoint(broadcast, targetPort);
+
+            socket.SendTo(data, ep);
         }
-
-        private void WriteToLog(string text)
+        
+        private void ReceiveCallback(IAsyncResult ar)
         {
-            Debug.Log(text);
-            logText += text + "\n";
-        }
+            byte[] data = state.Client.EndReceive(ar, ref state.EndPoint);
+            
+            Debug.Log($"Received broadcast from {state.EndPoint}");
 
-        public static void SendMessage(byte[] bytes, string iP = serverIP)
-        {
-            Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
-            IPAddress broadcast = IPAddress.Parse(iP);
-            IPEndPoint ep = new IPEndPoint(broadcast, listenPort);
-
-            s.SendTo(bytes, ep);
-        }
-
-        private void Listen(UdpClient listener, IPEndPoint groupEP)
-        {
-            WriteToLog("Waiting for broadcast");
-            while (true)
+            try
             {
-                try
-                {
-                    byte[] bytes = listener.Receive(ref groupEP);
-                    WriteToLog($"Received broadcast from {groupEP} :");
-                    InterpreteData.Invoke(bytes);
-                }
-                catch (Exception e)
-                {
-                    WriteToLog(e.ToString());
-                    break;
-                }
+                InterpreteData.Invoke(new Message(data));
             }
+            catch (Exception e)
+            {
+                Debug.Log(e.Message);
+            }
+            
+            if (active)
+                ReceiveMessages();
+        }
+
+        public void ReceiveMessages()
+        {
+            state.Client.BeginReceive(ReceiveCallback, new object());
         }
     }
 }
