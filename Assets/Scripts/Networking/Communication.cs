@@ -14,25 +14,33 @@ namespace Networking
 
         public static void InitializeServer(string targetIP, int targetPort)
         {
+            if (server != null)
+                CloseServer();
             serverIP = targetIP;
             server = new TCP(serverIP, targetPort);
             server.InterpreteData = Listeners;
             server.Initialize();
         }
 
-        public static void InitializeGame(int targetPort, int listeningPort = 11100)
+        public static void InitializeGame(string targetIP, int targetPort, int listeningPort = 11100)
         {
-            game = new UDP("192.168.3.4", targetPort, listeningPort);
+            game = new UDP(targetIP, targetPort, listeningPort);
             game.InterpreteData = Listeners;
             game.Initialize();
         }
 
+        public static void CloseServer()
+        {
+            server.Stop();
+            server = null;
+        }
+        
         public static void CloseGame()
         {
             game.Stop();
             game = null;
         }
-        
+
         public static bool SendToServer(Message message)
         {
             return SendMessage(message, server);

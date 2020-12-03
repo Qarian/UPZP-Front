@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -34,6 +35,8 @@ namespace Networking
         public override void SendData(byte[] data)
         {
             stream.Write(data, 0, data.Length);
+            stream.Flush();
+            Debug.Log("Send");
         }
 
         public override void Stop()

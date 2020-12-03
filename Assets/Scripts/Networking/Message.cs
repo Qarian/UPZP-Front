@@ -12,6 +12,8 @@ namespace Networking
         public byte Version { get; }
         public byte[] Payload { get; }
         
+        public bool PayloadOnly { get; private set; }
+        
         private readonly byte[] beginSequence = BitConverter.GetBytes((ushort)0xABDA);
         private byte[] header;
         
@@ -22,8 +24,9 @@ namespace Networking
         // Interpreting received byte[]
         public Message(byte[] receivedData)
         {
-            // BEGIN SEQUENCE
+            PayloadOnly = false;
             
+            // BEGIN SEQUENCE
             if (beginSequence.Equals(SubArray(receivedData, 0, 2)))
                 throw new Exception("Wrong begin sequence");
             
@@ -38,7 +41,7 @@ namespace Networking
             // PAYLOAD LENGHT
             int payloadLenght = BitConverter.ToInt32(receivedData, 4);
             if (receivedData.Length - HeaderLength != payloadLenght)
-                throw new Exception($"Wrong payload length: got {receivedData.Length - HeaderLength} expected {payloadLenght}");
+                ErrorInReceivedMessage($"Wrong payload length:\nReceived\t{receivedData.Length - HeaderLength}\nExpected\t{payloadLenght}");
             
             Payload = SubArray(receivedData, HeaderLength, receivedData.Length - HeaderLength);
             header = SubArray(receivedData, 0, HeaderLength);
@@ -46,8 +49,8 @@ namespace Networking
             // PAYLOAD CHECKSUM
             if (includedPayloadChecksum)
             {
-                if (CalculateCRC(Payload, CRCConfig.CRC32).Equals(SubArray(header,8, 4)))
-                    throw new Exception("Wrong payload checksum");
+                if (CalculateCRC(Payload, CRCConfig.CRC32).SequenceEqual(SubArray(header,8, 4)))
+                    ErrorInReceivedMessage("Wrong payload checksum:\nReceived\t{receivedData.Length - HeaderLength}\nExpected\t{payloadLenght}");
             }
             
             // RES
@@ -56,15 +59,28 @@ namespace Networking
             // HEADER CHECKSUM
             byte[] calculatedHeaderChecksum = CalculateCRC(SubArray(header, 0, HeaderLength - 2), CRCConfig.ARC);
             if (!calculatedHeaderChecksum.SequenceEqual(SubArray(header, HeaderLength - 2, 2)))
-                throw new Exception($"Wrong header checksum\nExpected:\t{BitConverter.ToString(calculatedHeaderChecksum)}\nReceived:\t{BitConverter.ToString(SubArray(header, HeaderLength - 2, 2))}");
+                ErrorInReceivedMessage($"Wrong header checksum\nReceived:\t{BitConverter.ToString(SubArray(header, HeaderLength - 2, 2))}\nExpected:\t{BitConverter.ToString(calculatedHeaderChecksum)}");
+
+            if (PayloadOnly)
+            {
+                Version = byte.MaxValue;
+                Payload = receivedData;
+            }
         }
 
         // Sending serialized data
-        public Message(byte[] payload, byte version, bool includePayloadChecksum = true)
+        public Message(byte[] payload, byte version, bool includePayloadChecksum = true, bool payloadOnly = false)
         {
             Payload = payload;
             includedPayloadChecksum = includePayloadChecksum;
             Version = version;
+            PayloadOnly = payloadOnly;
+
+            if (payloadOnly)
+            {
+                header = new byte[0];
+                return;
+            }
 
             List<byte> newHeader = new List<byte>(HeaderLength);
             
@@ -87,7 +103,13 @@ namespace Networking
             if (header.Length != HeaderLength)
                 throw new Exception($"Header should be {HeaderLength}, but is {header.Length}");
         }
+
         
+        private void ErrorInReceivedMessage(string errorText)
+        {
+            Debug.LogError(errorText);
+            PayloadOnly = true;
+        }
 
         public byte[] ToBytes()
         {

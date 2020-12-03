@@ -5,7 +5,7 @@ using TestData;
 using TMPro;
 using UnityEngine;
 
-public class FlatbufTest : MonoBehaviour
+public class UDPTest : MonoBehaviour
 {
     [SerializeField] private TMP_InputField posX = default;
     [SerializeField] private TMP_InputField posY = default;
@@ -21,7 +21,7 @@ public class FlatbufTest : MonoBehaviour
 
     private void T()
     {
-        Communication.InitializeGame(11100);
+        Communication.InitializeGame(iPAddress.text, 11100);
         Communication.Listeners += ReadData;
     }
 
