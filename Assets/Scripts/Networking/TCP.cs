@@ -41,7 +41,8 @@ namespace Networking
 
         public override void Stop()
         {
-            client.Close();
+            if (client != null)
+                client.Close();
             active = false;
         }
 

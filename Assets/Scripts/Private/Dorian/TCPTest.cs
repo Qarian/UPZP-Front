@@ -15,11 +15,12 @@ public class TCPTest : MonoBehaviour
     [SerializeField] private TMP_InputField inputInt = default;
     [SerializeField] private TMP_InputField inputString = default;
     [SerializeField] private TMP_InputField iPAddress = default;
+    [SerializeField] private TMP_InputField targetPort = default;
 
     public void Connect()
     {
-        Communication.InitializeServer(iPAddress.text,11100);
-        Communication.Listeners += ReadData;
+        if (Communication.InitializeServer(iPAddress.text, int.Parse(targetPort.text)))
+            Communication.Listeners += ReadData;
     }
 
     public void SendData()

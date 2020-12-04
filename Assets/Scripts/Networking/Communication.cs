@@ -12,14 +12,22 @@ namespace Networking
         public static Action<Message> Listeners;
 
 
-        public static void InitializeServer(string targetIP, int targetPort)
+        public static bool InitializeServer(string targetIP, int targetPort)
         {
             if (server != null)
-                return;
+                return true;
             serverIP = targetIP;
             server = new TCP(serverIP, targetPort);
             server.InterpreteData = Listeners;
             server.Initialize();
+            if (!server.active)
+            {
+                server.Stop();
+                server = null;
+                return false;
+            }
+
+            return true;
         }
 
         public static void InitializeGame(string targetIP, int targetPort, int listeningPort = 11100)
