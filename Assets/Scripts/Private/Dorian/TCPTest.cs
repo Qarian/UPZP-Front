@@ -38,7 +38,7 @@ public class TCPTest : MonoBehaviour
         builder.Finish(testObj.Value);
 
         byte[] bytes = builder.SizedByteArray();
-        Communication.SendToServer(new Message(bytes, 1));
+        Communication.SendToServer(new Message(bytes, 1, payloadOnly:true));
     }
 
     private void ReadData(Message message)

@@ -21,8 +21,8 @@ namespace Networking
             {
                 client = new TcpClient(targetIP, targetPort);
                 stream = client.GetStream();
-                active = true;
                 Task.Run(Listen);
+                active = true;
                 Debug.Log("Connected using TCP");
             }
             catch (Exception e)
@@ -47,21 +47,23 @@ namespace Networking
 
         private void Listen()
         {
-            Debug.Log("TCP waiting for message");
             while (true)
             {
                 try
                 {
+                    InterpreteData.Invoke(null);
                     if (!active)
                         return;
                     byte[] data = new byte[500];
                     stream.Read(data, 0, data.Length);
-                    InterpreteData.Invoke(new Message(data));
+                    Message message = new Message(data);
+                    Debug.Log(BitConverter.ToString(message.Payload));
+                    InterpreteData.Invoke(message);
                 }
                 catch (Exception e)
                 {
                     Debug.LogError(e.ToString());
-                    break;
+                    //break;
                 }
             }
         }

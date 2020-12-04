@@ -40,11 +40,15 @@ public class LoggerTMP : MonoBehaviour
 
     private void InterpreteData(Message message)
     {
-        tmpLog += $"Version: {message.Version}\n";
+        if (message == null)
+            return;
+        
+        var log = $"Version: {message.Version}\n";
         var buffer = new ByteBuffer(message.Payload);
         Tester tester = Tester.GetRootAsTester(buffer);
-        tmpLog += $"Integer: {tester.SomeInteger}\n";
-        tmpLog += $"String: {tester.SomeString}\n";
-        tmpLog += $"Pos: {((Vec3) tester.Pos).ToVector3().ToString()}\n";
+        log += $"Integer: {tester.SomeInteger}\n";
+        log += $"String: {tester.SomeString}\n";
+        log += $"Pos: {((Vec3) tester.Pos).ToVector3().ToString()}\n";
+        tmpLog += log;
     }
 }

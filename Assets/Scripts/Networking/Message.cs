@@ -107,6 +107,8 @@ namespace Networking
         
         private void ErrorInReceivedMessage(string errorText)
         {
+            if (PayloadOnly)
+                return;
             Debug.LogError(errorText);
             PayloadOnly = true;
         }

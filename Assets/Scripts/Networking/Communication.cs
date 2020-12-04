@@ -15,7 +15,7 @@ namespace Networking
         public static void InitializeServer(string targetIP, int targetPort)
         {
             if (server != null)
-                CloseServer();
+                return;
             serverIP = targetIP;
             server = new TCP(serverIP, targetPort);
             server.InterpreteData = Listeners;
