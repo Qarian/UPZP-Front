@@ -49,8 +49,8 @@ namespace Networking
             // PAYLOAD CHECKSUM
             if (includedPayloadChecksum)
             {
-                if (CalculateCRC(Payload, CRCConfig.CRC32).SequenceEqual(SubArray(header,8, 4)))
-                    ErrorInReceivedMessage("Wrong payload checksum:\nReceived\t{receivedData.Length - HeaderLength}\nExpected\t{payloadLenght}");
+                if (CalculateCRC(Payload, CRCConfig.CRC32).Equals(SubArray(header,8, 4)))
+                    ErrorInReceivedMessage($"Wrong payload checksum:\nReceived\t{BitConverter.ToString(SubArray(header,8, 4))}\nExpected\t{BitConverter.ToString(CalculateCRC(Payload, CRCConfig.CRC32))}");
             }
             
             // RES
