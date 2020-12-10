@@ -1,0 +1,16 @@
+namespace UPZP.FWaitingRoomsList;
+
+table FWaitingRoom {
+    id:int;
+    city:string;
+    host:string;
+    clientsLogged:int;
+    clientsMax:int;
+    status:int;
+}
+
+table FWaitingRoomsList {
+    waitingRoom:[FWaitingRoom];
+}
+
+root_type FWaitingRoomsList;

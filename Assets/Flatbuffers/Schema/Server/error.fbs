@@ -1,0 +1,7 @@
+namespace UPZP.FError;
+
+table FError {
+    message:string;
+}
+
+root_type FError;

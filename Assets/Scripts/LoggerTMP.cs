@@ -6,6 +6,7 @@ using TestData;
 using UnityEngine;
 using TMPro;
 using UnityEngine.PlayerLoop;
+using UPZP.FWaitingRoomsList;
 
 [RequireComponent(typeof(TMP_Text))]
 public class LoggerTMP : MonoBehaviour
@@ -43,12 +44,20 @@ public class LoggerTMP : MonoBehaviour
         if (message == null)
             return;
         
-        var log = $"Version: {message.Version}\n";
-        var buffer = new ByteBuffer(message.Payload);
-        Tester tester = Tester.GetRootAsTester(buffer);
-        log += $"Integer: {tester.SomeInteger}\n";
-        log += $"String: {tester.SomeString}\n";
-        log += $"Pos: {((Vec3) tester.Pos).ToVector3().ToString()}\n";
-        tmpLog += log;
+        if (message.Version == 7)
+        {
+            var buffer = new ByteBuffer(message.Payload);
+            FWaitingRoomsList list = FWaitingRoomsList.GetRootAsFWaitingRoomsList(buffer);
+            tmpLog += $"\n\n\nNew list arrived!\nAmount of games: {list.WaitingRoomLength}\n";
+            for (int i = 0; i < list.WaitingRoomLength; i++)
+            {
+                var room = list.WaitingRoom(i).Value;
+                tmpLog += $"City:\t{room.City}, Players:\t{room.ClientsLogged}/{room.ClientsLogged}, Host:\t{room.Host}\n";
+            }
+        }
+        else
+        {
+            tmpLog += $"Unexpected version: {message.Version}\n";
+        }
     }
 }

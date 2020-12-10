@@ -55,7 +55,7 @@ namespace Networking
                     InterpreteData.Invoke(null);
                     if (!active)
                         return;
-                    byte[] data = new byte[500];
+                    byte[] data = new byte[1000];
                     stream.Read(data, 0, data.Length);
                     Message message = new Message(data);
                     Debug.Log(BitConverter.ToString(message.Payload));

@@ -1,0 +1,8 @@
+namespace UPZP.FLoggingClient;
+
+table FLoggingClient {
+  name:string;
+  password:string;
+}
+
+root_type FLoggingClient;

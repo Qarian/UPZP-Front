@@ -40,10 +40,10 @@ namespace Networking
 
             // PAYLOAD LENGHT
             int payloadLenght = BitConverter.ToInt32(receivedData, 4);
-            if (receivedData.Length - HeaderLength != payloadLenght)
+            if (receivedData.Length - HeaderLength < payloadLenght)
                 ErrorInReceivedMessage($"Wrong payload length:\nReceived\t{receivedData.Length - HeaderLength}\nExpected\t{payloadLenght}");
             
-            Payload = SubArray(receivedData, HeaderLength, receivedData.Length - HeaderLength);
+            Payload = SubArray(receivedData, HeaderLength, payloadLenght);
             header = SubArray(receivedData, 0, HeaderLength);
             
             // PAYLOAD CHECKSUM
