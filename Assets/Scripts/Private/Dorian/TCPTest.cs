@@ -27,6 +27,8 @@ public class TCPTest : MonoBehaviour
         FLoggingClient.StartFLoggingClient(builder);
         FLoggingClient.AddName(builder, l);
         FLoggingClient.AddPassword(builder, h);
+        var obj = FLoggingClient.EndFLoggingClient(builder);
+        builder.Finish(obj.Value);
         
 
         byte[] bytes = builder.SizedByteArray();
