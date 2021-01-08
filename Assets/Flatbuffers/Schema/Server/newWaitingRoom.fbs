@@ -1,0 +1,9 @@
+namespace mainServer.schemas.FNewWaitingRoom;
+
+table FNewWaitingRoom {
+    city:string;
+    name:string;
+    clientsMax:int;
+}
+
+root_type FNewWaitingRoom;

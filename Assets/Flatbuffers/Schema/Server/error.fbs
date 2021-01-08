@@ -1,0 +1,7 @@
+namespace mainServer.schemas.FError;
+
+table FError {
+    message:string;
+}
+
+root_type FError;

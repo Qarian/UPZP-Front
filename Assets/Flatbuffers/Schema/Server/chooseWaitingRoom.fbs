@@ -1,0 +1,7 @@
+namespace mainServer.schemas.FChooseWaitingRoom;
+
+table FChooseWaitingRoom {
+    id:int;
+}
+
+root_type FChooseWaitingRoom;

@@ -1,0 +1,30 @@
+namespace mainServer.schemas.FWaitingRoom;
+
+enum FVehicleType:byte {Pedestrian, Cyclist, Car}
+
+table FClient {
+    name:string;
+    id:int;
+    vehicle:FVehicle;
+}
+
+table FVehicle {
+    vehicleType:FVehicleType;
+    velocity:int;
+}
+
+table FTeam {
+    clients:[FClient];
+}
+
+table FWaitingRoom {
+  id:int;
+  teams:[FTeam];
+  city:string;
+  host:int;
+  clientsMax:int;
+}
+
+root_type FWaitingRoom;
+
+root_type FVehicle;
