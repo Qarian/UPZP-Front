@@ -1,19 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Exensions;
-using FlatBuffers;
+﻿using FlatBuffers;
 using Networking;
-using TestData;
 using TMPro;
 using UnityEngine;
+using mainServer.schemas.FLoggingClient;
 
 public class TCPTest : MonoBehaviour
 {
-    [SerializeField] private TMP_InputField posX = default;
-    [SerializeField] private TMP_InputField posY = default;
-    [SerializeField] private TMP_InputField posZ = default;
-    [SerializeField] private TMP_InputField inputInt = default;
-    [SerializeField] private TMP_InputField inputString = default;
+    [SerializeField] private TMP_InputField login = default;
+    [SerializeField] private TMP_InputField haslo = default;
     [SerializeField] private TMP_InputField iPAddress = default;
     [SerializeField] private TMP_InputField targetPort = default;
 
@@ -25,29 +19,24 @@ public class TCPTest : MonoBehaviour
 
     public void SendData()
     {
-        var builder = new FlatBufferBuilder(250);
+        var builder = new FlatBufferBuilder(200);
         
-        var someString = builder.CreateString(inputString.text);
-        var pos = Vec3.CreateVec3(builder,
-            float.Parse(posX.text), float.Parse(posY.text), float.Parse(posZ.text));
+        var l = builder.CreateString(login.text);
+        var h = builder.CreateString(haslo.text);
         
-        Tester.StartTester(builder);
-        Tester.AddPos(builder, pos);
-        Tester.AddSomeInteger(builder, int.Parse(inputInt.text));
-        Tester.AddSomeString(builder, someString);
-        var testObj = Tester.EndTester(builder);
-        builder.Finish(testObj.Value);
+        FLoggingClient.StartFLoggingClient(builder);
+        FLoggingClient.AddName(builder, l);
+        FLoggingClient.AddPassword(builder, h);
+        var obj = FLoggingClient.EndFLoggingClient(builder);
+        builder.Finish(obj.Value);
+        
 
         byte[] bytes = builder.SizedByteArray();
-        Communication.SendToServer(new Message(bytes, 1, payloadOnly:true));
+        Communication.SendToServer(new Message(bytes, 2));
     }
 
     private void ReadData(Message message)
     {
-        var buffer = new ByteBuffer(message.Payload);
-        Tester tester = Tester.GetRootAsTester(buffer);
-        Debug.Log($"Integer: {tester.SomeInteger}\n");
-        Debug.Log($"String: {tester.SomeString}\n");
-        Debug.Log($"Pos: {((Vec3) tester.Pos).ToVector3().ToString()}\n");
+        Debug.Log($"Received payload version: {message.Version}");
     }
 }

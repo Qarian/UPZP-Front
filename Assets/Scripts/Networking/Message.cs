@@ -12,7 +12,7 @@ namespace Networking
         public byte Version { get; }
         public byte[] Payload { get; }
         
-        public bool PayloadOnly { get; private set; }
+        public bool IsPayloadOnly { get; private set; }
         
         private readonly byte[] beginSequence = BitConverter.GetBytes((ushort)0xABDA);
         private byte[] header;
@@ -24,7 +24,7 @@ namespace Networking
         // Interpreting received byte[]
         public Message(byte[] receivedData)
         {
-            PayloadOnly = false;
+            IsPayloadOnly = false;
             
             // BEGIN SEQUENCE
             if (beginSequence.Equals(SubArray(receivedData, 0, 2)))
@@ -40,10 +40,10 @@ namespace Networking
 
             // PAYLOAD LENGHT
             int payloadLenght = BitConverter.ToInt32(receivedData, 4);
-            if (receivedData.Length - HeaderLength != payloadLenght)
+            if (receivedData.Length - HeaderLength < payloadLenght)
                 ErrorInReceivedMessage($"Wrong payload length:\nReceived\t{receivedData.Length - HeaderLength}\nExpected\t{payloadLenght}");
             
-            Payload = SubArray(receivedData, HeaderLength, receivedData.Length - HeaderLength);
+            Payload = SubArray(receivedData, HeaderLength, payloadLenght);
             header = SubArray(receivedData, 0, HeaderLength);
             
             // PAYLOAD CHECKSUM
@@ -61,7 +61,7 @@ namespace Networking
             if (!calculatedHeaderChecksum.SequenceEqual(SubArray(header, HeaderLength - 2, 2)))
                 ErrorInReceivedMessage($"Wrong header checksum\nReceived:\t{BitConverter.ToString(SubArray(header, HeaderLength - 2, 2))}\nExpected:\t{BitConverter.ToString(calculatedHeaderChecksum)}");
 
-            if (PayloadOnly)
+            if (IsPayloadOnly)
             {
                 Version = byte.MaxValue;
                 Payload = receivedData;
@@ -69,14 +69,14 @@ namespace Networking
         }
 
         // Sending serialized data
-        public Message(byte[] payload, byte version, bool includePayloadChecksum = true, bool payloadOnly = false)
+        public Message(byte[] payload, byte version, bool includePayloadChecksum = true, bool isPayloadOnly = false)
         {
             Payload = payload;
             includedPayloadChecksum = includePayloadChecksum;
             Version = version;
-            PayloadOnly = payloadOnly;
+            IsPayloadOnly = isPayloadOnly;
 
-            if (payloadOnly)
+            if (isPayloadOnly)
             {
                 header = new byte[0];
                 return;
@@ -107,10 +107,10 @@ namespace Networking
         
         private void ErrorInReceivedMessage(string errorText)
         {
-            if (PayloadOnly)
+            if (IsPayloadOnly)
                 return;
             Debug.LogError(errorText);
-            PayloadOnly = true;
+            IsPayloadOnly = true;
         }
 
         public byte[] ToBytes()

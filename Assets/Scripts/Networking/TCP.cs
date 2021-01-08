@@ -52,14 +52,14 @@ namespace Networking
             {
                 try
                 {
-                    InterpreteData.Invoke(null);
-                    if (!active)
+                    if (!client.Connected)
                         return;
-                    byte[] data = new byte[500];
+                    byte[] data = new byte[1000];
                     stream.Read(data, 0, data.Length);
                     Message message = new Message(data);
-                    Debug.Log(BitConverter.ToString(message.Payload));
-                    InterpreteData.Invoke(message);
+                    if (message.Version == 0)
+                        break;
+                    InterpreteData?.Invoke(message);
                 }
                 catch (Exception e)
                 {
