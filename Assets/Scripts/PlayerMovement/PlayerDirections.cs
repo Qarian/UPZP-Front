@@ -8,15 +8,28 @@ using Mapbox.Unity.Utilities;
 using Mapbox.Unity;
 using System;
 
-namespace Mapbox.Examples
-{
-	public class AstronautDirections : MonoBehaviour
-	{
-		AbstractMap _map;
-		Directions.Directions _directions;
-		Action<List<Vector3>> callback;
 
-		void Awake()
+public class PlayerDirections : MonoBehaviour
+	{
+	[System.Serializable]
+	public enum Routing
+	{
+		Cycling, Driving, Walking
+
+			
+	}
+	RoutingProfile getProfile(Routing routing) {
+		if (routing == Routing.Walking) { return RoutingProfile.Walking; }
+		if (routing == Routing.Driving) { return RoutingProfile.Driving; }
+		return RoutingProfile.Cycling;
+	}
+
+	public Routing routing = Routing.Driving;
+		AbstractMap _map;
+		Directions _directions;
+		Action<List<Vector3>> callback;
+		
+	void Awake()
 		{
 			_directions = MapboxAccess.Instance.Directions;
 		}
@@ -31,7 +44,7 @@ namespace Mapbox.Examples
 			var wp = new Vector2d[2];
 			wp[0] = start.GetGeoPosition(_map.CenterMercator, _map.WorldRelativeScale);
 			wp[1] = end.GetGeoPosition(_map.CenterMercator, _map.WorldRelativeScale);
-			var _directionResource = new DirectionResource(wp, RoutingProfile.Cycling);
+			var _directionResource = new DirectionResource(wp, getProfile(routing));
 			_directionResource.Steps = true;
 			_directions.Query(_directionResource, HandleDirectionsResponse);
 		}
@@ -52,4 +65,4 @@ namespace Mapbox.Examples
 			callback(dat);
 		}
 	}
-}
+

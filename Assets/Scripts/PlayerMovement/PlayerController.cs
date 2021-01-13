@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mapbox.Unity.Map;
 
-namespace Mapbox.Examples
-{
-	public class AstronautMouseController : MonoBehaviour
+	public class PlayerController : MonoBehaviour
 	{
 		[Header("Character")]
 		[SerializeField]
@@ -17,7 +15,7 @@ namespace Mapbox.Examples
 
 		[Header("References")]
 		[SerializeField]
-		AstronautDirections directions;
+		PlayerDirections directions;
 		[SerializeField]
 		Transform startPoint;
 		[SerializeField]
@@ -72,14 +70,14 @@ namespace Mapbox.Examples
 
 			if (click)
 			{
-				
 				ray = cam.ScreenPointToRay(Input.mousePosition);
+
 				if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
 				{
 					startPoint.position = transform.localPosition;
 					endPoint.position = hit.point;
 					MovementEndpointControl(hit.point, true);
-					
+
 					directions.Query(GetPositions, startPoint, endPoint, map);
 				}
 			}
@@ -112,13 +110,13 @@ namespace Mapbox.Examples
 				futurePositions.Remove(nextPos);
 
 				moving = true;
-				characterAnimator.SetBool("IsWalking", true);
+
 				StartCoroutine(MoveTo());
 			}
 			else if (futurePositions.Count <= 0)
 			{
 				moving = false;
-				characterAnimator.SetBool("IsWalking", false);
+
 			}
 		}
 
@@ -220,4 +218,3 @@ namespace Mapbox.Examples
 		}
 		#endregion
 	}
-}
