@@ -1,9 +1,6 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Networking;
+﻿using Networking;
 using TMPro;
 using UnityEngine;
-using UnityEngine.Networking.Types;
 
 public class RoomInfoDisplayer : MonoBehaviour
 {
@@ -14,9 +11,9 @@ public class RoomInfoDisplayer : MonoBehaviour
 
     private int id;
 
-    public void Initialize(RoomInfo info)
+    public void Initialize(GameInfo info)
     {
-        name.text = info.host.ToString();
+        name.text = info.host;
         city.text = info.city;
         players.text = $"{info.currentPlayers}/{info.maxPlayers}";
         status.text = info.status ? "In progress" : "Waiting";

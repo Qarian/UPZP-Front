@@ -32,6 +32,8 @@ public class ControllersManager : MonoBehaviour
         allControllers.Add(new LoginController());
         allControllers.Add(new GamesListController());
         allControllers.Add(new GameInfoController());
+        allControllers.Add(new WaitingRoomController());
+        allControllers.Add(new GameStartController());
         foreach (Controller controller in allControllers)
         {
             Communication.Listeners += controller.Receive;
@@ -40,6 +42,8 @@ public class ControllersManager : MonoBehaviour
 
     public void OpenScene(string sceneName)
     {
+        if (nextSceneToOpen == sceneName)
+            return;
         nextSceneToOpen = sceneName;
         openNextScene = true;
     }

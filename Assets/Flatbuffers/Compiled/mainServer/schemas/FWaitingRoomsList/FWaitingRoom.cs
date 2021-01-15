@@ -27,7 +27,13 @@ public struct FWaitingRoom : IFlatbufferObject
   public ArraySegment<byte>? GetCityBytes() { return __p.__vector_as_arraysegment(6); }
 #endif
   public byte[] GetCityArray() { return __p.__vector_as_array<byte>(6); }
-  public int Host { get { int o = __p.__offset(8); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
+  public string Host { get { int o = __p.__offset(8); return o != 0 ? __p.__string(o + __p.bb_pos) : null; } }
+#if ENABLE_SPAN_T
+  public Span<byte> GetHostBytes() { return __p.__vector_as_span<byte>(8, 1); }
+#else
+  public ArraySegment<byte>? GetHostBytes() { return __p.__vector_as_arraysegment(8); }
+#endif
+  public byte[] GetHostArray() { return __p.__vector_as_array<byte>(8); }
   public int ClientsLogged { get { int o = __p.__offset(10); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
   public int ClientsMax { get { int o = __p.__offset(12); return o != 0 ? __p.bb.GetInt(o + __p.bb_pos) : (int)0; } }
   public bool Status { get { int o = __p.__offset(14); return o != 0 ? 0!=__p.bb.Get(o + __p.bb_pos) : (bool)false; } }
@@ -35,14 +41,14 @@ public struct FWaitingRoom : IFlatbufferObject
   public static Offset<mainServer.schemas.FWaitingRoomsList.FWaitingRoom> CreateFWaitingRoom(FlatBufferBuilder builder,
       int id = 0,
       StringOffset cityOffset = default(StringOffset),
-      int host = 0,
+      StringOffset hostOffset = default(StringOffset),
       int clientsLogged = 0,
       int clientsMax = 0,
       bool status = false) {
     builder.StartTable(6);
     FWaitingRoom.AddClientsMax(builder, clientsMax);
     FWaitingRoom.AddClientsLogged(builder, clientsLogged);
-    FWaitingRoom.AddHost(builder, host);
+    FWaitingRoom.AddHost(builder, hostOffset);
     FWaitingRoom.AddCity(builder, cityOffset);
     FWaitingRoom.AddId(builder, id);
     FWaitingRoom.AddStatus(builder, status);
@@ -52,7 +58,7 @@ public struct FWaitingRoom : IFlatbufferObject
   public static void StartFWaitingRoom(FlatBufferBuilder builder) { builder.StartTable(6); }
   public static void AddId(FlatBufferBuilder builder, int id) { builder.AddInt(0, id, 0); }
   public static void AddCity(FlatBufferBuilder builder, StringOffset cityOffset) { builder.AddOffset(1, cityOffset.Value, 0); }
-  public static void AddHost(FlatBufferBuilder builder, int host) { builder.AddInt(2, host, 0); }
+  public static void AddHost(FlatBufferBuilder builder, StringOffset hostOffset) { builder.AddOffset(2, hostOffset.Value, 0); }
   public static void AddClientsLogged(FlatBufferBuilder builder, int clientsLogged) { builder.AddInt(3, clientsLogged, 0); }
   public static void AddClientsMax(FlatBufferBuilder builder, int clientsMax) { builder.AddInt(4, clientsMax, 0); }
   public static void AddStatus(FlatBufferBuilder builder, bool status) { builder.AddBool(5, status, false); }

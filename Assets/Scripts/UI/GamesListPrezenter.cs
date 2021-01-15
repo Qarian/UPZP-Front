@@ -1,12 +1,30 @@
-﻿using UnityEngine;
+﻿
+using UnityEngine;
 
 public class GamesListPrezenter : MonoBehaviour
 {
     [SerializeField] private RoomInfoDisplayer roomRowPrefab = default;
     [SerializeField] private Transform listParent = default;
-    
-    public void UpdateList(RoomInfo[] rooms)
+
+    private GameInfo[] roomsToUpdate;
+
+    private void Update()
     {
+        if (roomsToUpdate != null)
+        {
+            UpdateList(roomsToUpdate);
+            roomsToUpdate = null;
+        }
+    }
+
+    public void UpdateList(GameInfo[] rooms, bool onNextFrame = false)
+    {
+        if (onNextFrame)
+        {
+            roomsToUpdate = rooms;
+            return;
+        }
+        
         foreach (Transform child in listParent)
         {
             Destroy(child.gameObject);

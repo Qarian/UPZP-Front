@@ -53,7 +53,7 @@ namespace Networking
                 try
                 {
                     if (!client.Connected)
-                        return;
+                        break;
                     byte[] data = new byte[1000];
                     stream.Read(data, 0, data.Length);
                     Message message = new Message(data);
@@ -67,6 +67,8 @@ namespace Networking
                     //break;
                 }
             }
+
+            active = false;
         }
     }
 }

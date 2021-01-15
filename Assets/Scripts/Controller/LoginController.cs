@@ -8,6 +8,8 @@ public class LoginController : Controller
 {
     private LoginHandler loginHandler;
 
+    public static string playerName;
+
     public void OnOpenScene(string sceneName)
     {
         if (sceneName.Equals("Ekran Logowania"))
@@ -23,7 +25,8 @@ public class LoginController : Controller
 
     private void Login(string username, string password)
     {
-        Debug.Log("login");
+        playerName = username;
+        
         var builder = new FlatBufferBuilder(200);
         
         var l = builder.CreateString(username);
@@ -34,7 +37,6 @@ public class LoginController : Controller
         FLoggingClient.AddPassword(builder, h);
         var obj = FLoggingClient.EndFLoggingClient(builder);
         builder.Finish(obj.Value);
-        
 
         byte[] bytes = builder.SizedByteArray();
         Communication.SendToServer(new Message(bytes, 2));

@@ -8,7 +8,7 @@ public class GamesListController : Controller
 {
     private GamesListPrezenter gamesListPrezenter;
 
-    private RoomInfo[] rooms;
+    private GameInfo[] rooms;
 
     public void OnOpenScene(string sceneName)
     {
@@ -30,20 +30,19 @@ public class GamesListController : Controller
         string debugText = "";
         var buffer = new ByteBuffer(message.Payload);
         FWaitingRoomsList roomsList = FWaitingRoomsList.GetRootAsFWaitingRoomsList(buffer);
-        debugText += $"\n\n\nNew list arrived!\nAmount of games: {roomsList.WaitingRoomLength}\n";
+        /*debugText += $"New list arrived!\nAmount of games: {roomsList.WaitingRoomLength}\n";
         for (int i = 0; i < roomsList.WaitingRoomLength; i++)
         {
             var room = roomsList.WaitingRoom(i).Value;
             debugText += $"City:\t{room.City}, Players:\t{room.ClientsLogged}/{room.ClientsLogged}, Host:\t{room.Host}\n";
         }
-        Debug.Log(debugText);
+        Debug.Log(debugText);*/
         
-        
-        rooms = new RoomInfo[roomsList.WaitingRoomLength];
+        rooms = new GameInfo[roomsList.WaitingRoomLength];
         for (int i = 0; i < roomsList.WaitingRoomLength; i++)
         {
-            rooms[i] = new RoomInfo(roomsList.WaitingRoom(i).Value);
+            rooms[i] = new GameInfo(roomsList.WaitingRoom(i).Value);
         }
-        gamesListPrezenter?.UpdateList(rooms);
+        gamesListPrezenter?.UpdateList(rooms, true);
     }
 }
