@@ -26,6 +26,8 @@ public class Mock : MonoBehaviour
         map.Initialize(map_center, map.AbsoluteZoom);
 
     }
+
+
     public void Get(List<Vector2> new_positions)
     { List<Vector3> unityPositions = new List<Vector3>();
         foreach( Vector2 pos in new_positions)

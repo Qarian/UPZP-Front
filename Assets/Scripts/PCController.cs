@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mapbox.Unity.Map;
 using Mapbox.Unity.Utilities;
+using System;
 
 public class PCController : MonoBehaviour
 {
@@ -52,15 +53,15 @@ public class PCController : MonoBehaviour
 
 		if (click)
 		{
-			Debug.Log("click");
+
 			ray = cam.ScreenPointToRay(Input.mousePosition);
 
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
 			{
-				Debug.Log("click2");
+
 				Vector3 dest = hit.point;
-				float movementVector = Vector2.Angle(dest.ToVector2xz(), character.position.ToVector2xz());
-				YOURSERVER.Send(movementVector);
+				float movementAngle = Vector2.SignedAngle(dest.ToVector2xz()-character.position.ToVector2xz(),Vector2.up );
+				YOURSERVER.Send((movementAngle > 0 ? movementAngle : movementAngle+360)/180*(float)Math.PI) ;
 			}
 		}
 	}
