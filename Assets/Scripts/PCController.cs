@@ -3,16 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mapbox.Unity.Map;
 using Mapbox.Unity.Utilities;
+using System;
 
 public class PCController : MonoBehaviour
 {
-    public GameObject character;
+    public Transform character;
     public Transform target;
     public AbstractMap map;
     public GameObject rayPlane;
 	public Camera cam;
 	public Mock YOURSERVER;
-	LayerMask layerMask;
+	public LayerMask layerMask;
     Ray ray;
     RaycastHit hit;
     LayerMask raycastPlane;
@@ -52,13 +53,15 @@ public class PCController : MonoBehaviour
 
 		if (click)
 		{
+
 			ray = cam.ScreenPointToRay(Input.mousePosition);
 
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
 			{
-				target.position = hit.point;
-				float movementVector = Vector2.Angle( target.position.ToVector2xz(), transform.position.ToVector2xz());
-				YOURSERVER.Send(movementVector);
+
+				Vector3 dest = hit.point;
+				float movementAngle = Vector2.SignedAngle(dest.ToVector2xz()-character.position.ToVector2xz(),Vector2.up );
+				YOURSERVER.Send((movementAngle > 0 ? movementAngle : movementAngle+360)/180*(float)Math.PI) ;
 			}
 		}
 	}
