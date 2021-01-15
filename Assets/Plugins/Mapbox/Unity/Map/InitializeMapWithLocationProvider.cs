@@ -16,7 +16,7 @@
 			// Prevent double initialization of the map. 
 			_map.InitializeOnStart = false;
 		}
-
+/*
 		protected virtual IEnumerator Start()
 		{
 			yield return null;
@@ -29,5 +29,6 @@
 			_locationProvider.OnLocationUpdated -= LocationProvider_OnLocationUpdated;
 			_map.Initialize(location.LatitudeLongitude, _map.AbsoluteZoom);
 		}
+		*/
 	}
 }
