@@ -188,7 +188,10 @@ MonoBehaviour:
   map: {fileID: 1681008958}
   rayPlane: {fileID: 1210707125}
   cam: {fileID: 239717743}
-  YOURSERVER: {fileID: 0}
+  YOURSERVER: {fileID: 1216887932}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 2
 --- !u!1 &239717740
 GameObject:
   m_ObjectHideFlags: 0
@@ -674,7 +677,7 @@ GameObject:
   - component: {fileID: 1210707128}
   - component: {fileID: 1210707127}
   - component: {fileID: 1210707126}
-  m_Layer: 17
+  m_Layer: 1
   m_Name: RaycastPlane
   m_TagString: Untagged
   m_Icon: {fileID: 0}

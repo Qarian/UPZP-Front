@@ -6,13 +6,13 @@ using Mapbox.Unity.Utilities;
 
 public class PCController : MonoBehaviour
 {
-    public GameObject character;
+    public Transform character;
     public Transform target;
     public AbstractMap map;
     public GameObject rayPlane;
 	public Camera cam;
 	public Mock YOURSERVER;
-	LayerMask layerMask;
+	public LayerMask layerMask;
     Ray ray;
     RaycastHit hit;
     LayerMask raycastPlane;
@@ -52,12 +52,14 @@ public class PCController : MonoBehaviour
 
 		if (click)
 		{
+			Debug.Log("click");
 			ray = cam.ScreenPointToRay(Input.mousePosition);
 
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
 			{
-				target.position = hit.point;
-				float movementVector = Vector2.Angle( target.position.ToVector2xz(), transform.position.ToVector2xz());
+				Debug.Log("click2");
+				Vector3 dest = hit.point;
+				float movementVector = Vector2.Angle(dest.ToVector2xz(), character.position.ToVector2xz());
 				YOURSERVER.Send(movementVector);
 			}
 		}

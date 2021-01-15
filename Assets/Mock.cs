@@ -17,8 +17,8 @@ public class Mock : MonoBehaviour
 
 
     public void Send(float direction)
-    { 
-
+    {
+        Debug.Log(direction);
     }
 
     public void Init(Vector2d map_center)

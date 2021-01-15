@@ -23,7 +23,7 @@ public class CharacterManager : MonoBehaviour
         Transform tatget = PC.transform.Find("Target").transform;
         targets.Add(tatget);
         PCC.target = tatget;
-        PCC.character = PC;
+        PCC.character = PC.transform.Find("Body");
     }
     public void createNPC(Vector3 start_position)
     {
