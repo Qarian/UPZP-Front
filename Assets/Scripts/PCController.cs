@@ -4,15 +4,18 @@ using UnityEngine;
 using Mapbox.Unity.Map;
 using Mapbox.Unity.Utilities;
 using System;
+using FlatBuffers;
 
 public class PCController : MonoBehaviour
 {
     public Transform character;
     public Transform target;
-    public AbstractMap map;
+	Vector3 dest;
+
+	public AbstractMap map;
     public GameObject rayPlane;
 	public Camera cam;
-	public Mock YOURSERVER;
+	public CharacterManager CM;
 	public LayerMask layerMask;
     Ray ray;
     RaycastHit hit;
@@ -23,6 +26,9 @@ public class PCController : MonoBehaviour
 
 	Vector3 previousPos = Vector3.zero;
 	Vector3 deltaPos = Vector3.zero;
+
+
+
 	void CamControl()
 	{
 		deltaPos = target.position - previousPos;
@@ -37,16 +43,20 @@ public class PCController : MonoBehaviour
 
 		CamControl();
 
+
+
+
+
 		bool click = false;
 
-		if (Input.GetMouseButtonDown(0))
+		if (UnityEngine.Input.GetMouseButtonDown(0))
 		{
 			clicktime = Time.time;
 		}
-		if (Input.GetMouseButtonUp(0))
+		if (UnityEngine.Input.GetMouseButtonUp(0))
 		{
 			if (Time.time - clicktime < 0.15f)
-			{
+			{	
 				click = true;
 			}
 		}
@@ -54,15 +64,23 @@ public class PCController : MonoBehaviour
 		if (click)
 		{
 
-			ray = cam.ScreenPointToRay(Input.mousePosition);
+			ray = cam.ScreenPointToRay(UnityEngine.Input.mousePosition);
 
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
 			{
 
-				Vector3 dest = hit.point;
-				float movementAngle = Vector2.SignedAngle(dest.ToVector2xz()-character.position.ToVector2xz(),Vector2.up );
-				YOURSERVER.Send((movementAngle > 0 ? movementAngle : movementAngle+360)/180*(float)Math.PI) ;
+				dest = hit.point;
+				
 			}
 		}
+
+		
+		if ((dest - character.position).magnitude > 0.1)
+		{
+			float movementAngle = Vector2.SignedAngle(dest.ToVector2xz() - character.position.ToVector2xz(), Vector2.up);
+			CM.Send((movementAngle > 0 ? movementAngle : 360 - movementAngle) / 180 * (float)Math.PI);
+		}
+
+
 	}
 }
