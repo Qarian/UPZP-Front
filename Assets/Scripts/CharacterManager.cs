@@ -92,6 +92,9 @@ public class CharacterManager : MonoBehaviour
 
     internal void UpdateChrachters(GameStats gameStats)
     {
+
+        createCL(gameStats.cls);
+
         foreach (Dictionary<uint, PlayerData> team in gameStats.teams)
         {
             foreach (uint id in team.Keys)
