@@ -7,7 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Upzp.GameStatus;
-using Upzp.PlayerInput;
+
 public class CharacterManager : MonoBehaviour
 {
     public PCController PCC;
@@ -18,6 +18,8 @@ public class CharacterManager : MonoBehaviour
     public uint id;
     bool initialized = false;
     public Dictionary<uint,Transform> targets;
+
+    private ulong sequence = 2;
 
     public void Update()
     {
@@ -39,7 +41,9 @@ public class CharacterManager : MonoBehaviour
     { 
     
     }
+    
     Vector3 start_position;
+    
     public void createPC(PlayerData PCdata)
     {
         var pos = PCdata.position;
@@ -48,8 +52,10 @@ public class CharacterManager : MonoBehaviour
         Transform tatget = PC.transform.Find("Target").transform;
         targets.Add(PCdata.id, tatget);
         PCC.target = tatget;
-        PCC.character = PC.transform.Find("Body");
+        PCC.character = PC.transform.GetChild(0);
+        PCC.dest = PCC.character.position;
     }
+    
     public void createNPC(PlayerData NPCdata)
     {
         var pos = NPCdata.position;
@@ -78,21 +84,21 @@ public class CharacterManager : MonoBehaviour
         }
     }
 
-    internal void Send(float movementAngle)
+    internal void Send(float movementAngle, bool move = true)
     {
         FlatBufferBuilder biuld = new FlatBufferBuilder(200);
-        var offset = Upzp.PlayerInput.Input.CreateInput(biuld, 0, id, false, movementAngle, true);
+        var offset = Upzp.PlayerInput.Input.CreateInput(biuld, sequence, id, false, movementAngle, move);
         Upzp.PlayerInput.Input.FinishInputBuffer(biuld, offset);
         var mess = biuld.SizedByteArray();
         Communication.SendToGame(new Message(mess, 101));
+        sequence++;
     }
 
     internal void Initialize(GameStats gameStats)
-
     {
         initialized = true;
 
-           targets = new Dictionary<uint, Transform>();
+        targets = new Dictionary<uint, Transform>();
 
         foreach (Dictionary<uint, PlayerData> team in gameStats.teams)
         {
@@ -110,9 +116,6 @@ public class CharacterManager : MonoBehaviour
 
             }
         }
-
-
-
 
     }
 }

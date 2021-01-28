@@ -7,9 +7,9 @@ using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityScript.Scripting.Pipeline;
 
-namespace Upzp.GameStatus {
+namespace Upzp.GameStatus
+{
     public class GameStats
-
     {
         public List<Dictionary<uint, PlayerData>> teams;
         public Vector2d mapCenter;
@@ -21,9 +21,8 @@ namespace Upzp.GameStatus {
 
         public GameStats(Game game)
         {
-
             var PC = new PlayerData(game.Teams(0).Value.Players(0).Value);
-            PCid = PC.id;
+            PCid = (uint)WaitingRoomPrezenter.userID;
             mapCenter = PC.position;
             cls = new List<Collectable>();
            

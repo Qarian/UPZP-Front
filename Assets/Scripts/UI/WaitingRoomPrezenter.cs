@@ -17,7 +17,7 @@ public class WaitingRoomPrezenter : MonoBehaviour
     [SerializeField] private TMP_Text players;
         
     [SerializeField] private GameObject startGame = default;
-    private int userID;
+    public static int userID;
     
     
     private WaitingRoomInfo gameInfo;
