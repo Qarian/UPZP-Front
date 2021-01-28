@@ -63,6 +63,7 @@ namespace Networking
             IPEndPoint ep = new IPEndPoint(broadcast, targetPort);
 
             socket.SendTo(data, ep);
+
         }
         
         private void ReceiveCallback(IAsyncResult ar)
@@ -71,6 +72,7 @@ namespace Networking
             
             Debug.Log($"Received broadcast from {state.EndPoint}");
 
+  
             try
             {
                 InterpreteData.Invoke(new Message(data));

@@ -5,41 +5,49 @@ using System;
 using UnityEngine;
 using Mapbox.Map;
 using Mapbox.Unity.Map;
+using UnityEngine.SceneManagement;
+using Mapbox.Examples;
+using System.Runtime.InteropServices;
 
 public class GameStartController : Controller
-{ CharacterManager CM = null;
+{
+    public static GameStartController GSC = null;
+    CharacterManager CM = null;
     AbstractMap map = null;
-    GameStats gameStats = null;
+    public GameStats gameStats = null;
+
+    public GameStartController()
+    {
+        if (GSC!=null)
+        {
+            GSC = this;
+        }
+    }
     public void OnOpenScene(string sceneName)
     {
-      if (sceneName.Equals("Gra"))
-        {
-            map = GameObject.FindObjectOfType<AbstractMap>();
-            CM = GameObject.FindObjectOfType<CharacterManager>();
-        }
+
     }
 
     public void Receive(Message message)
     {
+
         if (message.Version != 100)
             return;
 
         var buffer = new ByteBuffer(message.Payload);
         Game game = Game.GetRootAsGame(buffer);
-        if (map != null)
-        {
+
             if (gameStats == null)
             {
-                gameStats = new GameStats(game);
-                map.Initialize(gameStats.mapCenter, map.AbsoluteZoom);
-                CM.Initialize(gameStats);
+            gameStats = new GameStats(game);
+            GSC = this;
+            ControllersManager.Instance.OpenScene("Gra");
             }
             else
             {
                 gameStats.Update(game);
-                CM.UpdateChrachters(gameStats);
             }
-        }
+        
 
     }
 }

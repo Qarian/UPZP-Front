@@ -16,13 +16,22 @@ public class CharacterManager : MonoBehaviour
     public GameObject CLPrefab;
     public AbstractMap map;
     public uint id;
+    bool initialized = false;
     public Dictionary<uint,Transform> targets;
 
-    private void Start()
+    public void Update()
     {
-        if (!GameObject.FindObjectOfType<ControllersManager>())
+        if (GameStartController.GSC.gameStats.isUpdated)
         {
-
+            GameStartController.GSC.gameStats.isUpdated = false;
+            if (!initialized)
+            {
+                Initialize(GameStartController.GSC.gameStats);
+                PCC.isLoaded = true;
+            }
+            else {
+                UpdateChrachters(GameStartController.GSC.gameStats);
+            }
         }
     }
 
@@ -56,10 +65,15 @@ public class CharacterManager : MonoBehaviour
         foreach (Dictionary<uint, PlayerData> team in gameStats.teams)
         {
             foreach (uint id in team.Keys)
-            {
+            {   
                 var pos = team[id].position;
-                targets[id].position = Conversions.GeoToWorldPosition(pos.x, pos.y, map.CenterMercator, map.WorldRelativeScale).ToVector3xz();
-
+                if (targets.ContainsKey(id))
+                {
+                    targets[id].position = Conversions.GeoToWorldPosition(pos.x, pos.y, map.CenterMercator, map.WorldRelativeScale).ToVector3xz();
+                }
+                else {
+                    createNPC(team[id]);
+                }
             }
         }
     }
@@ -70,13 +84,15 @@ public class CharacterManager : MonoBehaviour
         var offset = Upzp.PlayerInput.Input.CreateInput(biuld, 0, id, false, movementAngle, true);
         Upzp.PlayerInput.Input.FinishInputBuffer(biuld, offset);
         var mess = biuld.SizedByteArray();
-        Communication.SendToServer(new Message(mess, 101));
+        Communication.SendToGame(new Message(mess, 101));
     }
 
     internal void Initialize(GameStats gameStats)
 
     {
-        targets = new Dictionary<uint, Transform>();
+        initialized = true;
+
+           targets = new Dictionary<uint, Transform>();
 
         foreach (Dictionary<uint, PlayerData> team in gameStats.teams)
         {

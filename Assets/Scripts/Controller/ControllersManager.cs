@@ -33,6 +33,7 @@ public class ControllersManager : MonoBehaviour
         allControllers.Add(new GamesListController());
         allControllers.Add(new GameInfoController());
         allControllers.Add(new WaitingRoomController());
+        allControllers.Add(new GameConnection());
         allControllers.Add(new GameStartController());
         foreach (Controller controller in allControllers)
         {

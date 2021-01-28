@@ -15,9 +15,12 @@ EditorBuildSettings:
     path: Assets/Scenes/Lista Gier.unity
     guid: 0d6a9687b400ecc418b120d747001c6a
   - enabled: 1
-    path: "Assets/Scenes/Szczeg\xF3\u0142y gry.unity"
+    path: "Assets/Scenes/Szczeg\xF3\u0142y Gry.unity"
     guid: d877b3741b6be6f44b2061ba90d88114
   - enabled: 0
-    path: Assets/Scenes/Gra.unity
+    path: 
     guid: fe26b3edde6c81d469df5a4420424408
+  - enabled: 1
+    path: Assets/Scenes/Gra.unity
+    guid: c7a85b0376e91ff4096259a464564b00
   m_configObjects: {}

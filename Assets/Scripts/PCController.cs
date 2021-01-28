@@ -11,7 +11,7 @@ public class PCController : MonoBehaviour
     public Transform character;
     public Transform target;
 	Vector3 dest;
-
+	public bool isLoaded = false;
 	public AbstractMap map;
     public GameObject rayPlane;
 	public Camera cam;
@@ -38,7 +38,7 @@ public class PCController : MonoBehaviour
 	}
 	void Update()
 	{
-		if (characterDisabled)
+		if (characterDisabled||!isLoaded)
 			return;
 
 		CamControl();

@@ -1,6 +1,8 @@
 ﻿using Mapbox.Utils;
+using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.PlayerLoop;
 using UnityScript.Scripting.Pipeline;
@@ -11,21 +13,32 @@ namespace Upzp.GameStatus {
     {
         public List<Dictionary<uint, PlayerData>> teams;
         public Vector2d mapCenter;
-        public int PCid;
+        public uint PCid;
         public List<int> points;
         public List<Collectable> cls;
+        public bool isUpdated = false;
 
 
         public GameStats(Game game)
         {
+
+            var PC = new PlayerData(game.Teams(0).Value.Players(0).Value);
+            PCid = PC.id;
+            mapCenter = PC.position;
             cls = new List<Collectable>();
+           
             for (int i = 0; i < game.BoxesLength; i++)
             {
                 cls.Add(new Collectable(game.Boxes(i).Value));
             }
-               points = new List<int>();
+            
+            points = new List<int>();
+            teams = new List<Dictionary<uint, PlayerData>>();
             for (int i = 0; i < game.TeamsLength; i++)
-            { Team? team = game.Teams(i);
+
+            {
+ 
+                Team? team = game.Teams(i);
                 points.Add(team.Value.Points);
                 teams.Add(new Dictionary<uint, PlayerData>());
                 for (int j = 0; j < team?.PlayersLength; j++) {
@@ -40,6 +53,7 @@ namespace Upzp.GameStatus {
         }
         public void Update(Game game)
         {
+            isUpdated = true;
             cls.Clear();
             for (int i = 0; i < game.BoxesLength; i++)
             {
@@ -49,14 +63,21 @@ namespace Upzp.GameStatus {
             {
                 Team? team = game.Teams(i);
                 points[i] = team.Value.Points;
+
                 for (int j = 0; j < team?.PlayersLength; j++)
                 {
                     var player = team?.Players(j);
 
-                    if (player.HasValue)
+                    if (j < teams[i].Count)
                     {
                         teams[i][player.Value.Id].Update(player.Value);
                     }
+                    else
+                    {
+                        PlayerData playerData = new PlayerData(player.Value);
+                        teams[i].Add(playerData.id, playerData);
+                    }
+ 
                 }
             }
         }
@@ -87,6 +108,7 @@ namespace Upzp.GameStatus {
             id = player.Id;
             name = player.Name;
             position = new Vector2d(player.Position.Value.Latitude, player.Position.Value.Longitude);
+            Debug.Log(position);
             vehicle = player.Vehicle;
             points = player.Points;
         }
