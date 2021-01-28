@@ -44,7 +44,6 @@ public class LoginController : Controller
 
     public void Receive(Message message)
     {
-        Debug.Log(message.Version);
         if (message.Version != 7)
             return;
         

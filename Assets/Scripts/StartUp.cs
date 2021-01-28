@@ -11,7 +11,7 @@ public class StartUp : MonoBehaviour
 
     private void Start()
     {
-        Connect();
+        //Connect();
     }
 
     public void Connect()

@@ -35,6 +35,7 @@ public class ControllersManager : MonoBehaviour
         allControllers.Add(new WaitingRoomController());
         allControllers.Add(new GameConnection());
         allControllers.Add(new GameStartController());
+        allControllers.Add(FindObjectOfType<ErrorController>());
         foreach (Controller controller in allControllers)
         {
             Communication.Listeners += controller.Receive;

@@ -1587,7 +1587,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6319468501645654333
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1660,7 +1660,7 @@ GameObject:
   - component: {fileID: 6319468501895690395}
   - component: {fileID: 6319468501895690392}
   m_Layer: 5
-  m_Name: New Game Creation
+  m_Name: New Game Creation Window
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1762,7 +1762,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 6319468501895690394}
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
@@ -1790,7 +1790,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   city: {fileID: 6319468501197906450}
-  name: {fileID: 6319468501515048853}
   maxClients: {fileID: 6319468500438288469}
   button: {fileID: 6319468500731611469}
 --- !u!1 &6319468501897922934

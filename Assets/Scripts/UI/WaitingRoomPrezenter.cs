@@ -94,8 +94,6 @@ public class WaitingRoomPrezenter : MonoBehaviour
                 icon = cyclistIcon;
                 break;
             case WaitingRoomInfo.Vehicle.Car:
-                icon = carIcon;
-                break;
             default:
                 icon = carIcon;
                 break;
