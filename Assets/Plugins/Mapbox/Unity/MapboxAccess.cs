@@ -339,6 +339,10 @@ namespace Mapbox.Unity
 
 		public string GetMapsSkuToken()
 		{
+			if (mapboxAccounts == null)
+			{
+				mapboxAccounts = new MapboxAccounts();
+			}
 			return mapboxAccounts.ObtainMapsSkuUserToken(Application.persistentDataPath);
 		}
 	}
