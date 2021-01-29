@@ -14,11 +14,15 @@ namespace Upzp.GameStatus
         public List<Dictionary<uint, PlayerData>> teams;
         public Vector2d mapCenter;
         public uint PCid;
+        public int PCTeam;
+        public int enemyScore = 0;
+        public int allyScore = 0;
+        public int playerScore = 0;
         public List<int> points;
         public List<Collectable> cls;
         public bool isUpdated = false;
 
-
+  
         public GameStats(Game game)
         {
             var PC = new PlayerData(game.Teams(0).Value.Players(0).Value);
@@ -46,6 +50,10 @@ namespace Upzp.GameStatus
                     {
                         PlayerData playerData = new PlayerData(player.Value);
                         teams[i].Add(playerData.id, playerData);
+                        if (playerData.id == PCid)
+                        {
+                            PCTeam = i;
+                        }
                     }
                 }
             }
@@ -53,20 +61,40 @@ namespace Upzp.GameStatus
         public void Update(Game game)
         {
             isUpdated = true;
-            cls.Clear();
-            for (int i = 0; i < game.BoxesLength; i++)
+            int k;
+            for (k = 0; k < game.BoxesLength; k++)
             {
-                cls.Add(new Collectable(game.Boxes(i).Value));
+                if (k < cls.Count) {
+                    cls[k].Update(game.Boxes(k).Value);
+                }
+                else {
+                    cls.Add(new Collectable(game.Boxes(k).Value));
+                }
+            }
+            for (; k < cls.Count; k++)
+            {
+                cls.RemoveAt(cls.Count-1);
             }
             for (int i = 0; i < game.TeamsLength; i++)
             {
+
                 Team? team = game.Teams(i);
+                if (i == PCTeam)
+                {
+                    allyScore = team.Value.Points;
+                }
+                else {
+                    enemyScore = team.Value.Points;
+                }
                 points[i] = team.Value.Points;
 
                 for (int j = 0; j < team?.PlayersLength; j++)
                 {
                     var player = team?.Players(j);
-
+                    if (player.Value.Id == PCid)
+                    {
+                        playerScore = player.Value.Points;
+                    }
                     if (j < teams[i].Count)
                     {
                         teams[i][player.Value.Id].Update(player.Value);
@@ -91,6 +119,10 @@ namespace Upzp.GameStatus
             points = cl.Value;
             position = new Vector2d(cl.Position.Value.Latitude, cl.Position.Value.Longitude);
 
+        }
+        public void Update(PointBox cl) {
+            points = cl.Value;
+            position = new Vector2d(cl.Position.Value.Latitude, cl.Position.Value.Longitude);
         }
     }
 

@@ -20,10 +20,15 @@ public class GameStartController : Controller
             GSC = this;
         }
     }
-    
+
+
+
     public void OnOpenScene(string sceneName)
     {
-
+        if (sceneName != "Gra")
+        {
+            gameStats = null;
+        }
     }
 
     public void Receive(Message message)

@@ -84,7 +84,7 @@ public class PCController : MonoBehaviour
 			if (character && (dest - character.position).magnitude > 0.5)
 			{
 				float movementAngle = -1 * Vector2.SignedAngle(dest.ToVector2xz() - character.position.ToVector2xz(), Vector2.right);
-				Debug.Log(movementAngle);
+
 				CM.Send((movementAngle > 0 ? movementAngle : 360 + movementAngle) / 180 * (float)Math.PI);
 			}
 			else

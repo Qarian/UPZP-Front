@@ -46,7 +46,10 @@ namespace Networking
         
         public static void CloseGame()
         {
-            game.Stop();
+            if (!(game is null))
+            {
+                game.Stop();
+            }
             game = null;
         }
 

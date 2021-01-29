@@ -42,19 +42,17 @@ public class CharacterManager : MonoBehaviour
     Vector3 start_position;
     public void UpdateCL(List<Collectable> CLdata)
     {
-     
-        Vector3[] CLpositions = new Vector3[CLdata.Count];
         int i;
         for (i = 0; i < CLdata.Count; i++)
-        {if (i < currentCLs.Count)
+        {
+            if (i < currentCLs.Count)
             {
-                currentCLs[i].transform.position = Conversions.GeoToWorldPosition(CLdata[i].position.x, CLdata[i].position.y, map.CenterMercator, map.WorldRelativeScale).ToVector3xz();
                 currentCLs[i].SetActive(true);
             }
             else {
                 currentCLs.Add(Instantiate(CLPrefab, Vector3.zero, Quaternion.identity));
-                currentCLs[i].transform.position = Conversions.GeoToWorldPosition(CLdata[i].position.x, CLdata[i].position.y, map.CenterMercator, map.WorldRelativeScale).ToVector3xz();
             }
+            currentCLs[i].transform.position = Conversions.GeoToWorldPosition(CLdata[i].position.x, CLdata[i].position.y, map.CenterMercator, map.WorldRelativeScale).ToVector3xz();
         }
         for (; i < currentCLs.Count; i++)
         {
@@ -117,6 +115,7 @@ public class CharacterManager : MonoBehaviour
 
     internal void Initialize(GameStats gameStats)
     {
+        id = GameStartController.GSC.gameStats.PCid;
         currentCLs = new List<GameObject>();
         UpdateCL(gameStats.cls);
 
