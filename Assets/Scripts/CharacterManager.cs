@@ -19,6 +19,7 @@ public class CharacterManager : MonoBehaviour
     public uint id;
     bool initialized = false;
     public Dictionary<uint,Transform> targets;
+    List<GameObject> currentCLs;
 
     private ulong sequence = 2;
 
@@ -39,46 +40,25 @@ public class CharacterManager : MonoBehaviour
     }
 
     Vector3 start_position;
-    
-    public void createCL(List<Collectable> CLdata)
+    public void UpdateCL(List<Collectable> CLdata)
     {
-
-        GameObject tempGameObject = null;
-        List<GameObject> currentCLs = GameObject.FindGameObjectsWithTag("CLPrefab").ToList();
-        int currentIndex = 0, countDifference = CLdata.Count - currentCLs.Count;
-
-
-        // extract new positions of all collectables
+     
         Vector3[] CLpositions = new Vector3[CLdata.Count];
-        for (int i = 0; i < CLdata.Count; i++)
-        {
-            CLpositions[i] = Conversions.GeoToWorldPosition(CLdata[i].position.x, CLdata[i].position.y, map.CenterMercator, map.WorldRelativeScale).ToVector3xz();
-        }
-
-        // instantiate new collectables if needed
-        if (countDifference > 0)
-        {
-            for (int i = 0; i < countDifference; i++)
+        int i;
+        for (i = 0; i < CLdata.Count; i++)
+        {if (i < currentCLs.Count)
             {
-                currentCLs.Add(Instantiate(CLPrefab, CLpositions[i], Quaternion.identity));
-                currentIndex++;
+                currentCLs[i].transform.position = Conversions.GeoToWorldPosition(CLdata[i].position.x, CLdata[i].position.y, map.CenterMercator, map.WorldRelativeScale).ToVector3xz();
+                currentCLs[i].SetActive(true);
+            }
+            else {
+                currentCLs.Add(Instantiate(CLPrefab, Vector3.zero, Quaternion.identity));
+                currentCLs[i].transform.position = Conversions.GeoToWorldPosition(CLdata[i].position.x, CLdata[i].position.y, map.CenterMercator, map.WorldRelativeScale).ToVector3xz();
             }
         }
-        // destroy unnecessary collectables
-        else if (countDifference < 0)
+        for (; i < currentCLs.Count; i++)
         {
-            for (int i = (-countDifference); i > 0; i--)
-            {
-                tempGameObject = currentCLs[i - 1];
-                currentCLs.RemoveAt(i - 1);
-                tempGameObject.Destroy();
-            }
-        }
-
-        // update positions for the remaining collectables
-        for (int i = 0; i < (currentCLs.Count - currentIndex); i++)
-        {
-            currentCLs[i].transform.position = CLpositions[currentIndex + i];
+            currentCLs[i].SetActive(false);
         }
     }
     
@@ -107,7 +87,7 @@ public class CharacterManager : MonoBehaviour
     internal void UpdateChrachters(GameStats gameStats)
     {
 
-        createCL(gameStats.cls);
+        UpdateCL(gameStats.cls);
 
         foreach (Dictionary<uint, PlayerData> team in gameStats.teams)
         {
@@ -137,8 +117,8 @@ public class CharacterManager : MonoBehaviour
 
     internal void Initialize(GameStats gameStats)
     {
-
-        createCL(gameStats.cls);
+        currentCLs = new List<GameObject>();
+        UpdateCL(gameStats.cls);
 
         initialized = true;
 
