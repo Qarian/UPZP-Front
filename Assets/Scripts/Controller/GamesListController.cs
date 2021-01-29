@@ -26,6 +26,7 @@ public class GamesListController : Controller
     {
         if (message.Version != 7)
             return;
+        
         Communication.CloseGame();
         string debugText = "";
         var buffer = new ByteBuffer(message.Payload);

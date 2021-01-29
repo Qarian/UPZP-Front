@@ -38,7 +38,7 @@ internal class GameConnection : Controller
     public static void Send()
     {
         FlatBufferBuilder biuld = new FlatBufferBuilder(200);
-        var offset = Upzp.PlayerInput.Input.CreateInput(biuld, 1, 0, false, 0, false);
+        var offset = Upzp.PlayerInput.Input.CreateInput(biuld, 1, (uint) PlayerIDController.id, false, 0, false);
         Upzp.PlayerInput.Input.FinishInputBuffer(biuld, offset);
         var mess = biuld.SizedByteArray();
 
