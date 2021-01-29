@@ -4,15 +4,13 @@ using UnityEngine;
 
 public class GEMETEST : MonoBehaviour
 {
-    // Start is called before the first frame update
+
     void Start()
     {
-        
+        if (!GameObject.FindObjectOfType<ControllersManager>())
+        {
+            var cm = gameObject.AddComponent<ControllersManager>();
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

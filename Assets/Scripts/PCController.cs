@@ -10,8 +10,8 @@ public class PCController : MonoBehaviour
 {
     public Transform character;
     public Transform target;
-	Vector3 dest;
-
+	public Vector3 dest;
+	public bool isLoaded = false;
 	public AbstractMap map;
     public GameObject rayPlane;
 	public Camera cam;
@@ -27,7 +27,15 @@ public class PCController : MonoBehaviour
 	Vector3 previousPos = Vector3.zero;
 	Vector3 deltaPos = Vector3.zero;
 
+	private void Start()
+	{
+		StartCoroutine(Send());
+	}
 
+	private void OnDestroy()
+	{
+		StopAllCoroutines();
+	}
 
 	void CamControl()
 	{
@@ -36,16 +44,13 @@ public class PCController : MonoBehaviour
 		cam.transform.position = Vector3.Lerp(cam.transform.position, cam.transform.position + deltaPos, Time.time);
 		previousPos = target.position;
 	}
+	
 	void Update()
 	{
-		if (characterDisabled)
+		if (characterDisabled||!isLoaded)
 			return;
 
 		CamControl();
-
-
-
-
 
 		bool click = false;
 
@@ -63,24 +68,32 @@ public class PCController : MonoBehaviour
 
 		if (click)
 		{
-
 			ray = cam.ScreenPointToRay(UnityEngine.Input.mousePosition);
 
 			if (Physics.Raycast(ray, out hit, Mathf.Infinity, layerMask))
 			{
-
 				dest = hit.point;
-				
 			}
 		}
-
-		
-		if ((dest - character.position).magnitude > 0.1)
-		{
-			float movementAngle = Vector2.SignedAngle(dest.ToVector2xz() - character.position.ToVector2xz(), Vector2.up);
-			CM.Send((movementAngle > 0 ? movementAngle : 360 - movementAngle) / 180 * (float)Math.PI);
-		}
-
-
 	}
+
+	IEnumerator Send()
+	{
+		while (true)
+		{
+			if (character && (dest - character.position).magnitude > 0.5)
+			{
+				float movementAngle = -1 * Vector2.SignedAngle(dest.ToVector2xz() - character.position.ToVector2xz(), Vector2.right);
+				Debug.Log(movementAngle);
+				CM.Send((movementAngle > 0 ? movementAngle : 360 + movementAngle) / 180 * (float)Math.PI);
+			}
+			else
+			{
+				CM.Send(0, false);
+			}
+
+			yield return new WaitForSeconds(0.05f);
+		}
+	}
+
 }

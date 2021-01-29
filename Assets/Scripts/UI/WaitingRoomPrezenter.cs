@@ -17,7 +17,7 @@ public class WaitingRoomPrezenter : MonoBehaviour
     [SerializeField] private TMP_Text players;
         
     [SerializeField] private GameObject startGame = default;
-    private int userID;
+    public static int userID;
     
     
     private WaitingRoomInfo gameInfo;
@@ -94,8 +94,6 @@ public class WaitingRoomPrezenter : MonoBehaviour
                 icon = cyclistIcon;
                 break;
             case WaitingRoomInfo.Vehicle.Car:
-                icon = carIcon;
-                break;
             default:
                 icon = carIcon;
                 break;

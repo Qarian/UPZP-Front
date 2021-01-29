@@ -170,10 +170,10 @@ MonoBehaviour:
     type: 3}
   NPCPrefab: {fileID: 2492723383063813627, guid: 6e5cd7fbebf45744cb080f5e99e08b44,
     type: 3}
-  CLPrefab: {fileID: 0}
+  CLPrefab: {fileID: 1612388547970332725, guid: 082c26be667f07340a9ddc1aa723b549,
+    type: 3}
   map: {fileID: 1681008958}
   id: 0
-  scoreInfo: {fileID: 0}
 --- !u!114 &195480800
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,6 +188,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   character: {fileID: 0}
   target: {fileID: 0}
+  dest: {x: 0, y: 0, z: 0}
+  isLoaded: 0
   map: {fileID: 1681008958}
   rayPlane: {fileID: 1210707125}
   cam: {fileID: 239717743}
@@ -1013,7 +1015,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1681008956}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 96f0fa82f89d64bb9a6524c72d538179, type: 3}
+  m_Script: {fileID: 11500000, guid: 03353c30c2d12e8429b096de6169ebe0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _map: {fileID: 1681008958}

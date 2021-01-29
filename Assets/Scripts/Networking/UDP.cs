@@ -18,7 +18,6 @@ namespace Networking
         }
 
         private UdpState state;
-        private Socket socket;
 
         public UDP(string targetIP, int targetPort, int listeningPort) : base(targetIP, targetPort)
         {
@@ -56,13 +55,10 @@ namespace Networking
 
         public override void SendData(byte[] data)
         {
-            if (socket == null)
-                socket = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-
             IPAddress broadcast = IPAddress.Parse(targetIP);
             IPEndPoint ep = new IPEndPoint(broadcast, targetPort);
 
-            socket.SendTo(data, ep);
+            state.Client.Client.SendTo(data, ep);
         }
         
         private void ReceiveCallback(IAsyncResult ar)

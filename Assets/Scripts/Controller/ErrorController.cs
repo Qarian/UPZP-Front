@@ -6,27 +6,40 @@ using mainServer.schemas.FError;
 
 public class ErrorController : MonoBehaviour, Controller
 {
-    [SerializeField] private TMP_Text text = default;
+    [SerializeField] private TMP_Text errorText = default;
+    [SerializeField] private Canvas errorCanvas = default;
+
+    private string errorToDisplay;
 
     private void Awake()
     {
-        gameObject.SetActive(false);
+        errorCanvas.enabled = false;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Update()
+    {
+        if (!string.IsNullOrEmpty(errorToDisplay))
+        {
+            errorCanvas.enabled = true;
+            errorText.text = errorToDisplay;
+            errorToDisplay = null;
+        }
     }
 
     public void OnOpenScene(string sceneName)
     {
         //Do nothing
     }
+    
 
     public void Receive(Message message)
     {
         if (message.Version != 1)
             return;
-        
-        gameObject.SetActive(true);
+
         var buffer = new ByteBuffer(message.Payload);
         FError error = FError.GetRootAsFError(buffer);
-        text.text = error.Message;
+        errorToDisplay = error.Message;
     }
 }

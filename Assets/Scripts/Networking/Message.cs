@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data.HashFunction;
 using System.Data.HashFunction.CRC;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 
 namespace Networking
@@ -24,6 +25,7 @@ namespace Networking
         // Interpreting received byte[]
         public Message(byte[] receivedData)
         {
+
             IsPayloadOnly = false;
             
             // BEGIN SEQUENCE
@@ -36,7 +38,7 @@ namespace Networking
             // RES
             
             // C
-            includedPayloadChecksum = (receivedData[3] % 2) == 1;
+            includedPayloadChecksum = (receivedData[3]>>7) == 1;
 
             // PAYLOAD LENGHT
             int payloadLenght = BitConverter.ToInt32(receivedData, 4);
@@ -71,6 +73,7 @@ namespace Networking
         // Sending serialized data
         public Message(byte[] payload, byte version, bool includePayloadChecksum = true, bool isPayloadOnly = false)
         {
+
             Payload = payload;
             includedPayloadChecksum = includePayloadChecksum;
             Version = version;
@@ -88,7 +91,7 @@ namespace Networking
             
             newHeader.Add(version);
             
-            newHeader.Add(includePayloadChecksum ? (byte)1u : (byte)0);
+            newHeader.Add(includePayloadChecksum ? (byte)128u : (byte)0);
             
             newHeader.AddRange(BitConverter.GetBytes(payload.Length)); // PAYLOAD LENGTH
             
