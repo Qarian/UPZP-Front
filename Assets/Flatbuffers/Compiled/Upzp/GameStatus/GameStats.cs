@@ -26,7 +26,7 @@ namespace Upzp.GameStatus
         public GameStats(Game game)
         {
             var PC = new PlayerData(game.Teams(0).Value.Players(0).Value);
-            PCid = (uint)WaitingRoomPrezenter.userID;
+            PCid = (uint)PlayerIDController.id;
             mapCenter = PC.position;
             cls = new List<Collectable>();
            

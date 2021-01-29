@@ -1,9 +1,6 @@
 ﻿using FlatBuffers;
 using Upzp.GameStatus;
 using Networking;
-using System;
-using UnityEngine;
-using Mapbox.Map;
 using Mapbox.Unity.Map;
 
 public class GameStartController : Controller
@@ -20,8 +17,6 @@ public class GameStartController : Controller
             GSC = this;
         }
     }
-
-
 
     public void OnOpenScene(string sceneName)
     {

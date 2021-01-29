@@ -31,6 +31,7 @@ public class ControllersManager : MonoBehaviour
         Communication.Listeners += message => { Debug.Log(message.Version); };
         allControllers.Add(new LoginController());
         allControllers.Add(new GamesListController());
+        allControllers.Add(new PlayerIDController());
         allControllers.Add(new GameInfoController());
         allControllers.Add(new WaitingRoomController());
         allControllers.Add(new GameConnection());

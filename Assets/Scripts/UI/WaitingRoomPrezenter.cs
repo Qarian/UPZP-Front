@@ -100,8 +100,5 @@ public class WaitingRoomPrezenter : MonoBehaviour
         }
         
         Instantiate(playerInfoPrefab, team).Initialize(icon, player.name);
-
-        if (player.name == LoginController.playerName)
-            userID = player.id;
     }
 }
